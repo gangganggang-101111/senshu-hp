@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /tools/
+
+Sitemap: https://gangganggang-101111.github.io/senshu-hp/sitemap.xml
