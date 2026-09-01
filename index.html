@@ -93,6 +93,7 @@
 <link rel="icon" href="assets/logo.png" type="image/png" sizes="864x864">
 <link rel="icon" href="assets/logo.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="assets/logo.png" sizes="180x180">
+<script>window.__resources = window.__resources || {};</script>
 <script>
 (function () {
   try {
@@ -1428,7 +1429,14 @@ a:hover{color:#0d5230}
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { page: 'top', nav: false, acc: {}, splash: true, newsAll: false };
+  static initialPage() {
+    if (typeof window === 'undefined') return 'top';
+    const allowed = { top: 1, about: 1, records: 1, join: 1, license: 1, members: 1, access: 1, contact: 1, app: 1 };
+    const h = (window.location.hash || '').replace(/^#/, '') || 'top';
+    return allowed[h] ? h : 'top';
+  }
+
+  state = { page: Component.initialPage(), nav: false, acc: {}, splash: true, newsAll: false };
 
   // true のページは Coming Soon 表示。公開するときは false に戻す（デザイン本体は残してある）
   static PAGE_SOON = { records: true, members: true };
@@ -1474,7 +1482,7 @@ class Component extends DCLogic {
   applyHash() {
     const allowed = { top:1, about:1, records:1, join:1, license:1, members:1, access:1, contact:1, app:1 };
     const h = ((typeof window !== 'undefined' && window.location.hash) || '').replace(/^#/, '') || 'top';
-    if (allowed[h]) this.setState({ page: h, nav: false });
+    if (allowed[h] && h !== this.state.page) this.setState({ page: h, nav: false });
   }
 
   syncDocTitle() {
